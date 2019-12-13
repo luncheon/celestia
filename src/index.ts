@@ -16,7 +16,7 @@ import {
   VertexColors,
   WebGLRenderer,
 } from 'three'
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
+import { TrackballControls } from 'three/examples/jsm/controls/TrackballControls'
 import { constellations, stars } from './data'
 
 const scene = new Scene()
@@ -85,9 +85,16 @@ renderer.setSize(width, height)
 document.body.insertBefore(renderer.domElement, document.body.firstChild)
 renderer.render(scene, camera)
 
-const controls = new OrbitControls(camera, document.body)
-controls.minDistance = controls.maxDistance = camera.position.distanceTo(new Vector3())
+const controls = new TrackballControls(camera, document.body)
+controls.rotateSpeed = -1
 controls.addEventListener('change', () => renderer.render(scene, camera))
+
+const animate = () => {
+  controls.update()
+  renderer.render(scene, camera)
+  requestAnimationFrame(animate)
+}
+animate()
 
 addEventListener('resize', () => {
   const width = window.innerWidth
