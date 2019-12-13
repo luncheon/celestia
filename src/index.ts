@@ -86,7 +86,7 @@ document.body.insertBefore(renderer.domElement, document.body.firstChild)
 renderer.render(scene, camera)
 
 const controls = new TrackballControls(camera, document.body)
-controls.rotateSpeed = -1
+controls.rotateSpeed = -0.5
 controls.addEventListener('change', () => renderer.render(scene, camera))
 
 const animate = () => {
