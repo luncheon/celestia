@@ -21,7 +21,7 @@ const getStars = async () => {
   const hipNameMap = Object.fromEntries(await readCsv('hip_proper_name'))
   return records.map(record => {
     const [hip, ah, am, as, dsign, dh, dm, ds, magnitude] = record.map(n => +n)
-    return [hip, hipNameMap[hip], ah * 3600 + am * 60 + as, (dsign ? 1 : -1) * (dh * 3600 + dm * 60 + ds), magnitude]
+    return [hip, ah * 3600 + am * 60 + as, (dsign ? 1 : -1) * (dh * 3600 + dm * 60 + ds), magnitude].concat(hipNameMap[hip] || [])
   })
 }
 

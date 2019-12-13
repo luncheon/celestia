@@ -2,7 +2,7 @@ import { Vector3 } from 'three'
 import _constellations from '../data/constellations.json'
 import _stars from '../data/stars.json'
 
-export const stars = _stars.map(([hip, name, rightAscension, declination, magnitude]) => {
+export const stars = _stars.map(([hip, rightAscension, declination, magnitude, name]) => {
   const a = (rightAscension / 86400) * 2 * Math.PI
   const b = (declination / 3600 / 180) * Math.PI
   const normal = new Vector3(Math.cos(a) * Math.cos(b), Math.sin(a) * Math.cos(b), Math.sin(b))

@@ -6,9 +6,10 @@
   "license": "WTFPL",
   "main": "index.js",
   "scripts": {
-    "start": "rollup -c -w",
-    "build": "rollup -c --environment NODE_ENV:production",
-    "build:data": "node data/generate.js"
+    "start": "npm run build:data && rollup -c -w",
+    "build": "npm run build:data && npm run build:script",
+    "build:data": "node data/generate.js",
+    "build:script": "rollup -c --environment NODE_ENV:production"
   },
   "dependencies": {
     "three": "^0.111.0"

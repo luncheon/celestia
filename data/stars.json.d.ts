@@ -1,2 +1,2 @@
-declare const stars: [number, string | null, number, number, number][]
+declare const stars: [number, number, number, number, string?][]
 export default stars
