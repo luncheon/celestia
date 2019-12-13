@@ -13,6 +13,11 @@ const readCsv = async basename => {
 
 const getStars = async () => {
   const records = await readCsv('hip_lite_major')
+  records.push(
+    ...(await readCsv('hip_constellation_line_star'))
+      .filter(star => records.every(([hip]) => hip !== star[0]))
+      .map(([hip, ah, am, as, dh, dm, ds, magnitude]) => [hip, ah, am, as, dh < 0 ? 0 : 1, Math.abs(dh), dm, ds, magnitude]),
+  )
   const hipNameMap = Object.fromEntries(await readCsv('hip_proper_name'))
   return records.map(record => {
     const [hip, ah, am, as, dsign, dh, dm, ds, magnitude] = record.map(n => +n)
