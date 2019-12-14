@@ -16,6 +16,7 @@ import {
   VertexColors,
   WebGLRenderer,
 } from 'three'
+import { DeviceOrientationControls } from 'three/examples/jsm/controls/DeviceOrientationControls'
 import { TrackballControls } from 'three/examples/jsm/controls/TrackballControls'
 import { constellations, stars } from './data'
 
@@ -74,34 +75,41 @@ const scene = new Scene()
   }
 }
 
-const width = window.innerWidth
-const height = window.innerHeight
-const camera = new PerspectiveCamera(50, width / height, 0.1, 4000)
+const camera = new PerspectiveCamera(50, 1, 0.1, 4000)
 camera.position.set(0, 0, -1e-6)
 camera.lookAt(0, 0, 1)
 
 const renderer = new WebGLRenderer({ antialias: true })
-renderer.setPixelRatio(window.devicePixelRatio)
-renderer.setSize(width, height)
 document.body.insertBefore(renderer.domElement, document.body.firstChild)
-renderer.render(scene, camera)
+renderer.setPixelRatio(window.devicePixelRatio)
 
-const controls = new TrackballControls(camera, document.body)
-controls.rotateSpeed = -0.5
-controls.addEventListener('change', () => renderer.render(scene, camera))
-
-const animate = () => {
-  controls.update()
-  renderer.render(scene, camera)
-  requestAnimationFrame(animate)
-}
-animate()
-
-addEventListener('resize', () => {
-  const width = window.innerWidth
-  const height = window.innerHeight
-  camera.aspect = width / height
+const updateSize = () => {
+  camera.aspect = window.innerWidth / window.innerHeight
   camera.updateProjectionMatrix()
-  renderer.setSize(width, height)
-  renderer.render(scene, camera)
-})
+  renderer.setSize(window.innerWidth, window.innerHeight)
+}
+updateSize()
+addEventListener('resize', updateSize)
+
+{
+  const _controls = new TrackballControls(camera, document.body)
+  _controls.rotateSpeed = -0.5
+  _controls.addEventListener('change', () => renderer.render(scene, camera))
+  let controls: { update(): void } = _controls
+
+  let deviceOrientationEventCount = 0
+  addEventListener('deviceorientation', function checkDeviceOrientationSupported() {
+    if (++deviceOrientationEventCount > 1) {
+      this.removeEventListener('deviceorientation', checkDeviceOrientationSupported)
+      _controls.dispose()
+      controls = new DeviceOrientationControls(camera)
+    }
+  })
+
+  const animate = () => {
+    controls.update()
+    renderer.render(scene, camera)
+    requestAnimationFrame(animate)
+  }
+  animate()
+}
