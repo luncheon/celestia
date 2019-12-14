@@ -96,19 +96,29 @@ addEventListener('resize', updateSize)
   _controls.rotateSpeed = -0.5
   let controls: { update(): void } = _controls
 
+  const animate = () => {
+    controls.update()
+    renderer.render(scene, camera)
+    requestAnimationFrame(animate)
+  }
+
+  let animationStarted: undefined | 1
+  const startAnimation = () => {
+    if (!animationStarted) {
+      animationStarted = 1
+      animate()
+    }
+  }
+
   let deviceOrientationEventCount = 0
   addEventListener('deviceorientation', function checkDeviceOrientationSupported() {
     if (++deviceOrientationEventCount > 1) {
       this.removeEventListener('deviceorientation', checkDeviceOrientationSupported)
       _controls.dispose()
       controls = new DeviceOrientationControls(camera)
+      startAnimation()
     }
   })
 
-  const animate = () => {
-    controls.update()
-    renderer.render(scene, camera)
-    requestAnimationFrame(animate)
-  }
-  setTimeout(animate, 1000)
+  setTimeout(startAnimation, 500)
 }
