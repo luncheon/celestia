@@ -110,5 +110,5 @@ addEventListener('resize', updateSize)
     renderer.render(scene, camera)
     requestAnimationFrame(animate)
   }
-  requestAnimationFrame(animate)
+  setTimeout(animate, 200)
 }
