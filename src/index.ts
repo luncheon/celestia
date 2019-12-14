@@ -75,7 +75,7 @@ const scene = new Scene()
   }
 }
 
-const camera = new PerspectiveCamera(50, 1, 0.1, 4000)
+const camera = new PerspectiveCamera(60, 1, 0.1, 4000)
 camera.position.set(0, 0, -1e-6)
 camera.lookAt(0, 0, 1)
 
@@ -94,7 +94,6 @@ addEventListener('resize', updateSize)
 {
   const _controls = new TrackballControls(camera, document.body)
   _controls.rotateSpeed = -0.5
-  _controls.addEventListener('change', () => renderer.render(scene, camera))
   let controls: { update(): void } = _controls
 
   let deviceOrientationEventCount = 0
@@ -111,5 +110,5 @@ addEventListener('resize', updateSize)
     renderer.render(scene, camera)
     requestAnimationFrame(animate)
   }
-  animate()
+  requestAnimationFrame(animate)
 }
