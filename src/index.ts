@@ -38,9 +38,9 @@ const scene = new Scene()
   texture.needsUpdate = true
 
   const geometry = new Geometry()
-  geometry.vertices = stars.map(star => star.normal.multiplyScalar(1.2 ** star.magnitude))
+  geometry.vertices = stars.map(star => star.normal.multiplyScalar(1.25 ** star.magnitude))
   geometry.colors = stars.map(star => new Color().setScalar(0.8 ** star.magnitude))
-  scene.add(new Points(geometry, new PointsMaterial({ size: 0.02, transparent: true, vertexColors: VertexColors, map: texture })))
+  scene.add(new Points(geometry, new PointsMaterial({ size: 0.025, transparent: true, vertexColors: VertexColors, map: texture })))
 }
 
 // constellation lines
