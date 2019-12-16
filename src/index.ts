@@ -1,7 +1,6 @@
 import {
   Color,
   Geometry,
-  LinearFilter,
   LineBasicMaterial,
   LineSegments,
   Mesh,
@@ -24,10 +23,24 @@ const scene = new Scene()
 
 // stars
 {
+  const radius = 100
+  const canvas = document.createElement('canvas')
+  canvas.width = canvas.height = radius * 2
+  const context = canvas.getContext('2d')! // eslint-disable-line @typescript-eslint/no-non-null-assertion
+  const gradient = context.createRadialGradient(radius, radius, 0, radius, radius, radius)
+  gradient.addColorStop(0, 'rgba(255,255,255,1)')
+  gradient.addColorStop(0.5, 'rgba(255,255,255,.7)')
+  gradient.addColorStop(1, 'rgba(255,255,255,0)')
+  context.fillStyle = gradient
+  context.arc(radius, radius, radius, 0, 2 * Math.PI)
+  context.fill()
+  const texture = new Texture(canvas)
+  texture.needsUpdate = true
+
   const geometry = new Geometry()
   geometry.vertices = stars.map(star => star.normal.multiplyScalar(1.2 ** star.magnitude))
   geometry.colors = stars.map(star => new Color().setScalar(0.8 ** star.magnitude))
-  scene.add(new Points(geometry, new PointsMaterial({ size: 0.01, vertexColors: VertexColors })))
+  scene.add(new Points(geometry, new PointsMaterial({ size: 0.02, transparent: true, vertexColors: VertexColors, map: texture })))
 }
 
 // constellation lines
@@ -61,7 +74,6 @@ const scene = new Scene()
   }
   const createCanvasMesh = (canvas: HTMLCanvasElement, position: Vector3) => {
     const texture = new Texture(canvas)
-    texture.minFilter = LinearFilter
     texture.needsUpdate = true
     const mesh = new Mesh(new PlaneGeometry(canvas.width, canvas.height), new MeshBasicMaterial({ map: texture }))
     mesh.position.copy(position)
