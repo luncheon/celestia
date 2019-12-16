@@ -92,12 +92,14 @@ updateSize()
 addEventListener('resize', updateSize)
 
 {
-  const _controls = new TrackballControls(camera, document.body)
-  _controls.rotateSpeed = -0.5
-  let controls: { update(): void } = _controls
+  const trackballControls = new TrackballControls(camera, document.body)
+  trackballControls.rotateSpeed = -0.5
 
+  const deviceOrientationControls = new DeviceOrientationControls(camera)
+
+  let activeControls: { update(): void } = trackballControls
   const animate = () => {
-    controls.update()
+    activeControls.update()
     renderer.render(scene, camera)
     requestAnimationFrame(animate)
   }
@@ -114,8 +116,8 @@ addEventListener('resize', updateSize)
   addEventListener('deviceorientation', function checkDeviceOrientationSupported() {
     if (++deviceOrientationEventCount > 1) {
       this.removeEventListener('deviceorientation', checkDeviceOrientationSupported)
-      _controls.dispose()
-      controls = new DeviceOrientationControls(camera)
+      trackballControls.dispose()
+      activeControls = deviceOrientationControls
       startAnimation()
     }
   })
