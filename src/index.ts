@@ -38,8 +38,8 @@ const scene = new Scene()
   texture.needsUpdate = true
 
   const geometry = new Geometry()
-  geometry.vertices = stars.map(star => star.normal.multiplyScalar(1.25 ** star.magnitude))
-  geometry.colors = stars.map(star => new Color().setScalar(0.8 ** star.magnitude))
+  geometry.vertices = stars.map(star => star.normal.multiplyScalar(1.25 ** star.vmag))
+  geometry.colors = stars.map(star => new Color(...star.rgb).multiplyScalar(0.8 ** star.vmag))
   scene.add(new Points(geometry, new PointsMaterial({ size: 0.025, transparent: true, vertexColors: VertexColors, map: texture })))
 }
 

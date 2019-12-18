@@ -2,12 +2,13 @@ import { Vector3 } from 'three'
 import _constellations from '../data/constellations.json'
 import _stars from '../data/stars.json'
 
-export const stars = _stars.map(([hip, vmag, , x, y, z, name]) => {
+export const stars = _stars.map(([hip, vmag, rgb, x, y, z, name]) => {
   const normal = new Vector3(x, y, z)
   return {
     hip,
     name,
-    magnitude: vmag,
+    vmag,
+    rgb,
     get normal() {
       return normal.clone()
     },
