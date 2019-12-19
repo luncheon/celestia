@@ -54,7 +54,7 @@ const scene = new Scene()
       )
     }
   }
-  scene.add(new LineSegments(geometry, new LineBasicMaterial({ color: 0x5555aa })))
+  scene.add(new LineSegments(geometry, new LineBasicMaterial({ color: 0x333366 })))
 }
 
 // constellation names
@@ -68,7 +68,7 @@ const scene = new Scene()
     context.font = '100 100px serif'
     context.textAlign = 'center'
     context.textBaseline = 'middle'
-    context.fillStyle = '#668'
+    context.fillStyle = '#558'
     context.fillText(text, canvas.width / 2, canvas.height / 2)
     return canvas
   }
