@@ -15,11 +15,13 @@
       }
       aside {
         position: fixed;
-        right: 0;
-        bottom: 0;
+        right: .25em;
+        bottom: .125em;
+        text-align: right;
+        color: #aaa;
       }
       a {
-        color: #aaa;
+        color: #999;
         text-decoration: none;
         transition: color .2s ease-out;
       }
@@ -27,11 +29,21 @@
         color: #fff;
         text-decoration: underline;
       }
+      .device-orientation-element {
+        display: inline-block;
+        width: 3ex;
+      }
     </style>
   </head>
   <body>
     <script type="module" src="index.js"></script>
     <aside>
+      <div id="camera-euler"></div>
+      <div id="device-orientations" style="display: none;">
+        α: <span class="device-orientation-element" id="device-orientation-alpha"></span>,
+        β: <span class="device-orientation-element" id="device-orientation-beta"></span>,
+        γ: <span class="device-orientation-element" id="device-orientation-gamma"></span>
+      </div>
       <a target="_blank" rel="noopener" href="https://github.com/luncheon/particlarium">https://github.com/luncheon/particlarium</a>
     </aside>
   </body>
