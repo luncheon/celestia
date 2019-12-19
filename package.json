@@ -8,7 +8,7 @@
   "scripts": {
     "start": "npm run build:data && rollup -c -w",
     "build": "npm run build:data && npm run build:script",
-    "build:data": "node data/generate.js",
+    "build:data": "node data/generate.js && node font/generate.js",
     "build:script": "rollup -c --environment NODE_ENV:production"
   },
   "dependencies": {
@@ -17,12 +17,14 @@
   "devDependencies": {
     "@rollup/plugin-json": "^4.0.0",
     "@rollup/plugin-node-resolve": "^6.0.0",
-    "@typescript-eslint/eslint-plugin": "^2.11.0",
-    "@typescript-eslint/parser": "^2.11.0",
+    "@types/css-font-loading-module": "0.0.2",
+    "@typescript-eslint/eslint-plugin": "^2.12.0",
+    "@typescript-eslint/parser": "^2.12.0",
     "eslint-config-mdcs": "^4.2.3",
     "eslint-config-prettier": "^6.7.0",
     "eslint-plugin-html": "^6.0.0",
     "eslint-plugin-prettier": "^3.1.2",
+    "fontmin": "^0.9.8",
     "prettier": "^1.19.1",
     "rollup": "^1.27.13",
     "rollup-plugin-analyzer": "^3.2.2",

@@ -11,3 +11,6 @@
   http://astronomy.webcrow.jp/hip/
 * 星座名データ（CC0）  
   http://astronomy.webcrow.jp/constellation/name.html
+
+* よもぎフォント
+  https://www.asterism-m.com/font/yomogifont/

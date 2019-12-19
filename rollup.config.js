@@ -24,7 +24,7 @@ export default {
     !watching && analyze({ summaryOnly: true, filter: module => module.size !== 0 }),
     !watching && filesize({ showBrotliSize: true }),
     del({ targets: outputDir }),
-    copy({ targets: [{ src: ['src/index.html', 'src/styles.css'], dest: outputDir }] }),
+    copy({ targets: [{ src: ['src/index.html', 'font/yomogifont.ttf'], dest: outputDir }] }),
     resolve({ browser: true }),
     eslint({ include: ['src/**/*.ts'] }),
     typescript({ clean: true }),
