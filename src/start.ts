@@ -53,18 +53,19 @@ export const start = async (objects: Object3D[]) => {
         const betaElement = getElementById('device-orientation-beta')
         const gammaElement = getElementById('device-orientation-gamma')
         update = () => {
+          const latitude = 35
           const deviceOrientation = deviceOrientationControls.deviceOrientation
           if (deviceOrientationControls.deviceOrientation instanceof DeviceOrientationEvent) {
             const alpha = deviceOrientation.alpha || 0
             const beta = deviceOrientation.beta || 0
             const gamma = deviceOrientation.gamma || 0
-            alphaElement.textContent = (Math.round(alpha) as string | number) as string
-            betaElement.textContent = (Math.round(beta) as string | number) as string
-            gammaElement.textContent = (Math.round(gamma) as string | number) as string
+            alphaElement.textContent = Math.round(alpha) as string & number
+            betaElement.textContent = Math.round(beta) as string & number
+            gammaElement.textContent = Math.round(gamma) as string & number
             deviceOrientationControls.deviceOrientation = {
-              alpha: alpha + 180,
-              beta: beta - 35 /* latitude */,
-              gamma: gamma,
+              alpha,
+              beta: ((beta + 180 - latitude) % 360) - 180,
+              gamma,
             }
             deviceOrientationControls.update()
             return 1
