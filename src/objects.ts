@@ -15,7 +15,7 @@ import {
 import { constellations, stars } from './data'
 
 const createStars = () => {
-  const radius = 100
+  const radius = 32
   const canvas = document.createElement('canvas')
   canvas.width = canvas.height = radius * 2
   const context = canvas.getContext('2d')! // eslint-disable-line @typescript-eslint/no-non-null-assertion
@@ -32,7 +32,7 @@ const createStars = () => {
   const geometry = new Geometry()
   geometry.vertices = stars.map(star => star.normal.multiplyScalar(1.25 ** star.vmag))
   geometry.colors = stars.map(star => new Color(...star.rgb).multiplyScalar(0.8 ** star.vmag))
-  return new Points(geometry, new PointsMaterial({ size: 0.025, transparent: true, vertexColors: VertexColors, map: texture }))
+  return new Points(geometry, new PointsMaterial({ size: 0.04, transparent: true, vertexColors: VertexColors, map: texture }))
 }
 
 const createConstellationLines = () => {
@@ -52,10 +52,10 @@ const createConstellationNames = () => {
   const createTextCanvas = (text: string) => {
     const canvas = document.createElement('canvas')
     const context = canvas.getContext('2d')! // eslint-disable-line @typescript-eslint/no-non-null-assertion
-    const font = '100 100px yomogifont'
+    const font = '100 60px yomogifont'
     context.font = font
-    canvas.width = Math.ceil(context.measureText(text).width * 1.1)
-    canvas.height = 110
+    canvas.width = 2 ** Math.ceil(Math.log2(context.measureText(text).width * 1.1))
+    canvas.height = 64
     context.font = font
     context.textAlign = 'center'
     context.textBaseline = 'middle'
@@ -74,7 +74,7 @@ const createConstellationNames = () => {
   return constellations.map(({ name, lines }) => {
     const stars = lines.flat().filter((star, i, stars) => stars.indexOf(star) === i)
     const normal = stars.reduce((normal, star) => normal.add(star.normal), new Vector3()).normalize()
-    return createCanvasMesh(createTextCanvas(name), normal.multiplyScalar(3000))
+    return createCanvasMesh(createTextCanvas(name), normal.multiplyScalar(2000))
   })
 }
 
