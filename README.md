@@ -1,4 +1,4 @@
-# Particlarium
+# Celestia
 
 パーティクルでプラネタリウムを
 
