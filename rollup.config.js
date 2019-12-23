@@ -1,5 +1,9 @@
+import fs from 'fs'
+import path from 'path'
+
 import del from 'rollup-plugin-delete'
 import copy from 'rollup-plugin-copy'
+import html from '@rollup/plugin-html'
 import resolve from '@rollup/plugin-node-resolve'
 import json from '@rollup/plugin-json'
 import { eslint } from 'rollup-plugin-eslint'
@@ -13,6 +17,11 @@ const production = process.env.NODE_ENV === 'production'
 const watching = process.env.ROLLUP_WATCH
 const outputDir = production ? 'docs' : '.docs'
 
+const template = () =>
+  fs
+    .readFileSync(path.resolve(__dirname, 'src/index.html'), 'utf-8')
+    .replace(/\$\{__BUILT_AT__\}/, new Date().toISOString().replace(/[-:T]|\..*/g, ''))
+
 export default {
   input: 'src/index.ts',
   output: {
@@ -24,7 +33,8 @@ export default {
     !watching && analyze({ summaryOnly: true, filter: module => module.size !== 0 }),
     !watching && filesize({ showBrotliSize: true }),
     del({ targets: outputDir }),
-    copy({ targets: [{ src: ['src/index.html', 'font/yomogifont.ttf'], dest: outputDir }] }),
+    copy({ targets: [{ src: ['font/yomogifont.ttf'], dest: outputDir }] }),
+    html({ template }),
     resolve({ browser: true }),
     eslint({ include: ['src/**/*.ts'] }),
     typescript({ clean: true }),
