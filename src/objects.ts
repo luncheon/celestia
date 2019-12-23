@@ -1,6 +1,8 @@
 import {
   Color,
+  EllipseCurve,
   Geometry,
+  Line,
   LineBasicMaterial,
   LineSegments,
   Mesh,
@@ -78,8 +80,14 @@ const createConstellationNames = () => {
   })
 }
 
+const createEquinoctial = () =>
+  new Line(
+    new Geometry().setFromPoints(new EllipseCurve(0, 0, 10, 10, 0, 2 * Math.PI, false, 0).getPoints(50)),
+    new LineBasicMaterial({ color: 0x880000 }),
+  )
+
 export const createObjects = () =>
   new FontFace('yomogifont', 'url(yomogifont.ttf)').load().then(font => {
     document.fonts.add(font)
-    return [createStars(), createConstellationLines(), ...createConstellationNames()]
+    return [createStars(), createConstellationLines(), createEquinoctial(), ...createConstellationNames()]
   })
