@@ -1,14 +1,17 @@
-import { Camera } from 'three'
-import { DeviceOrientationControls } from 'three/examples/jsm/controls/DeviceOrientationControls'
+import { Camera, Euler, Math as Math3, Quaternion } from 'three'
 import { TrackballControls } from 'three/examples/jsm/controls/TrackballControls'
 
+const degToRad = Math3.degToRad
 const getElementById = (id: string) => document.getElementById(id)! // eslint-disable-line @typescript-eslint/no-non-null-assertion
+
+let deviceOrientation: DeviceOrientationEvent | undefined
+addEventListener('deviceorientationabsolute', event => (deviceOrientation = event))
 
 const supportsDeviceOrientationEvent = new Promise(resolve => {
   let deviceOrientationEventCount = 0
-  addEventListener('deviceorientation', function checkDeviceOrientationSupported() {
+  addEventListener('deviceorientationabsolute', function checkDeviceOrientationSupported() {
     if (++deviceOrientationEventCount > 1) {
-      this.removeEventListener('deviceorientation', checkDeviceOrientationSupported)
+      this.removeEventListener('deviceorientationabsolute', checkDeviceOrientationSupported)
       resolve()
     }
   })
@@ -20,42 +23,30 @@ export const createControls = async (camera: Camera) => {
   const trackballControls = new TrackballControls(camera, document.body)
   trackballControls.rotateSpeed = -0.5
 
-  const deviceOrientationControls = new DeviceOrientationControls(camera)
-
   let update = (): unknown => {
     trackballControls.update()
     return 1
   }
-
-  await Promise.race([
-    supportsDeviceOrientationEvent.then(() => {
-      trackballControls.dispose()
-      getElementById('device-orientations').style.display = ''
-      const alphaElement = getElementById('device-orientation-alpha')
-      const betaElement = getElementById('device-orientation-beta')
-      const gammaElement = getElementById('device-orientation-gamma')
-      update = () => {
-        const latitude = 35
-        const deviceOrientation = deviceOrientationControls.deviceOrientation
-        if (deviceOrientation instanceof DeviceOrientationEvent) {
-          const alpha = deviceOrientation.alpha || 0
-          const beta = deviceOrientation.beta || 0
-          const gamma = deviceOrientation.gamma || 0
-          alphaElement.textContent = Math.round(alpha) as string & number
-          betaElement.textContent = Math.round(beta) as string & number
-          gammaElement.textContent = Math.round(gamma) as string & number
-          deviceOrientationControls.deviceOrientation = {
-            alpha,
-            beta: ((beta + 180 - latitude) % 360) - 180,
-            gamma,
-          }
-          deviceOrientationControls.update()
-          return 1
-        }
+  const useDeviceOrientations = () => {
+    trackballControls.dispose()
+    const deviceOrientationsElement = getElementById('device-orientations')
+    deviceOrientationsElement.style.display = ''
+    const q1 = new Quaternion(-Math.sqrt(0.5), 0, 0, Math.sqrt(0.5)) // - PI/2 around the x-axis
+    const euler = new Euler()
+    update = () => {
+      const latitude = 35
+      if (deviceOrientation instanceof DeviceOrientationEvent) {
+        const alpha = degToRad(deviceOrientation.alpha || 0)
+        const beta = degToRad((deviceOrientation.beta || 0) - latitude)
+        const gamma = degToRad(deviceOrientation.gamma || 0)
+        camera.quaternion.setFromEuler(euler.set(beta, alpha, -gamma, 'YXZ')).multiply(q1)
+        deviceOrientationsElement.textContent = `α: ${alpha.toFixed(2)}, β: ${beta.toFixed(2)}, γ: ${gamma.toFixed(2)}}`
+        return 1
       }
-    }),
-    timeoutsDeviceOrientationEvent,
-  ])
+    }
+  }
+
+  await Promise.race([supportsDeviceOrientationEvent.then(useDeviceOrientations), timeoutsDeviceOrientationEvent])
 
   return { update: () => update() }
 }
