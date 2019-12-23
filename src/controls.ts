@@ -1,8 +1,6 @@
-import { Camera, Euler, Math as Math3, Quaternion } from 'three'
+import { Camera } from 'three'
 import { TrackballControls } from 'three/examples/jsm/controls/TrackballControls'
-
-const degToRad = Math3.degToRad
-const getElementById = (id: string) => document.getElementById(id)! // eslint-disable-line @typescript-eslint/no-non-null-assertion
+import { deviceOrientationToQuaternion } from './deviceOrientationToQuaternion'
 
 let deviceOrientation: DeviceOrientationEvent | undefined
 addEventListener('deviceorientationabsolute', event => (deviceOrientation = event))
@@ -27,19 +25,17 @@ export const createControls = async (camera: Camera) => {
     trackballControls.update()
     return 1
   }
+
   const useDeviceOrientations = () => {
     trackballControls.dispose()
-    const deviceOrientationsElement = getElementById('device-orientations')
+    const deviceOrientationsElement = document.getElementById('device-orientations')! // eslint-disable-line @typescript-eslint/no-non-null-assertion
     deviceOrientationsElement.style.display = ''
-    const q1 = new Quaternion(-Math.sqrt(0.5), 0, 0, Math.sqrt(0.5)) // - PI/2 around the x-axis
-    const euler = new Euler()
     update = () => {
-      const latitude = 35
       if (deviceOrientation instanceof DeviceOrientationEvent) {
-        const alpha = degToRad(deviceOrientation.alpha || 0)
-        const beta = degToRad((deviceOrientation.beta || 0) - latitude)
-        const gamma = degToRad(deviceOrientation.gamma || 0)
-        camera.quaternion.setFromEuler(euler.set(beta, alpha, -gamma, 'YXZ')).multiply(q1)
+        const alpha = deviceOrientation.alpha || 0
+        const beta = deviceOrientation.beta || 0
+        const gamma = deviceOrientation.gamma || 0
+        camera.quaternion.set(...deviceOrientationToQuaternion(deviceOrientation))
         deviceOrientationsElement.textContent = `α: ${alpha.toFixed(2)}, β: ${beta.toFixed(2)}, γ: ${gamma.toFixed(2)}}`
         return 1
       }
@@ -47,6 +43,5 @@ export const createControls = async (camera: Camera) => {
   }
 
   await Promise.race([supportsDeviceOrientationEvent.then(useDeviceOrientations), timeoutsDeviceOrientationEvent])
-
   return { update: () => update() }
 }

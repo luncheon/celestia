@@ -24,7 +24,7 @@ const scene = new Scene()
 
 Promise.all([createControls(camera), createObjects()]).then(([controls, objects]) => {
   scene.add(...Object.values(objects))
-  const cameraEulerIndicator = document.getElementById('camera-euler') as HTMLElement
+  const cameraEulerIndicator = document.getElementById('camera-euler')! // eslint-disable-line @typescript-eslint/no-non-null-assertion
   const animate = () => {
     if (controls.update()) {
       const euler = new Euler().setFromRotationMatrix(camera.matrix, 'YXZ')
