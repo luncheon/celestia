@@ -3,6 +3,7 @@ import {
   Color,
   Euler,
   Geometry,
+  Group,
   Line,
   LineBasicMaterial,
   LineSegments,
@@ -75,25 +76,27 @@ const createConstellationNames = () => {
     mesh.lookAt(position.clone().normalize())
     return mesh
   }
-  return constellations.map(({ name, lines }) => {
+  const group = new Group()
+  for (const { name, lines } of constellations) {
     const stars = lines.flat().filter((star, i, stars) => stars.indexOf(star) === i)
     const normal = stars.reduce((normal, star) => normal.add(star.normal), new Vector3()).normalize()
-    return createCanvasMesh(createTextCanvas(name), normal.multiplyScalar(2000))
-  })
+    group.add(createCanvasMesh(createTextCanvas(name), normal.multiplyScalar(2000)))
+  }
+  return group
 }
 
 const equinoctialPoints = new ArcCurve(0, 0, 10, 0, 2 * Math.PI, false).getPoints(50)
 
-const createEquinoctial = () => new Line(new Geometry().setFromPoints(equinoctialPoints), new LineBasicMaterial({ color: 0x880000 }))
-
-const createEcliptic = () =>
-  new Line(
-    new Geometry().setFromPoints(equinoctialPoints).applyMatrix(new Matrix4().makeRotationFromEuler(new Euler((23.4 / 180) * Math.PI))),
-    new LineBasicMaterial({ color: 0x666600 }),
-  )
-
 export const createObjects = () =>
-  new FontFace('yomogifont', 'url(yomogifont.ttf)').load().then(font => {
-    document.fonts.add(font)
-    return [createEquinoctial(), createEcliptic(), createStars(), createConstellationLines(), ...createConstellationNames()]
-  })
+  new FontFace('yomogifont', 'url(yomogifont.ttf)')
+    .load()
+    .then(font => document.fonts.add(font))
+    .then(() => ({
+      stars: createStars(),
+      constellations: new Group().add(createConstellationLines()).add(createConstellationNames()),
+      equinoctial: new Line(new Geometry().setFromPoints(equinoctialPoints), new LineBasicMaterial({ color: 0x880000 })),
+      ecliptic: new Line(
+        new Geometry().setFromPoints(equinoctialPoints).applyMatrix(new Matrix4().makeRotationFromEuler(new Euler((23.4 / 180) * Math.PI))),
+        new LineBasicMaterial({ color: 0x666600 }),
+      ),
+    }))

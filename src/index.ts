@@ -22,7 +22,8 @@ camera.lookAt(0, 0, 1)
 
 const scene = new Scene()
 
-Promise.all([createControls(camera), createObjects().then(objects => scene.add(...objects))]).then(([controls]) => {
+Promise.all([createControls(camera), createObjects()]).then(([controls, objects]) => {
+  scene.add(...Object.values(objects))
   const cameraEulerIndicator = document.getElementById('camera-euler') as HTMLElement
   const animate = () => {
     if (controls.update()) {
