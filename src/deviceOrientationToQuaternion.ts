@@ -2,15 +2,7 @@ const degtorad = Math.PI / 180 // Degree-to-Radian conversion
 
 // https://qiita.com/73_ch/items/c9756d6ae76ea8367bd3
 // https://w3c.github.io/deviceorientation/spec-source-orientation.html#worked-example-2
-export const deviceOrientationToQuaternion = ({
-  alpha,
-  beta,
-  gamma,
-}: {
-  alpha: number | null
-  beta: number | null
-  gamma: number | null
-}) => {
+export const deviceOrientationToQuaternion = (alpha: number, beta: number, gamma: number) => {
   const _x = beta ? beta * degtorad : 0 // beta value
   const _y = gamma ? gamma * degtorad : 0 // gamma value
   const _z = alpha ? alpha * degtorad : 0 // alpha value

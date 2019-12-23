@@ -32,11 +32,12 @@ export const createControls = async (camera: Camera) => {
     deviceOrientationsElement.style.display = ''
     update = () => {
       if (deviceOrientation instanceof DeviceOrientationEvent) {
+        const latitude = 35
         const alpha = deviceOrientation.alpha || 0
-        const beta = deviceOrientation.beta || 0
+        const beta = (deviceOrientation.beta || 0) - latitude
         const gamma = deviceOrientation.gamma || 0
-        camera.quaternion.set(...deviceOrientationToQuaternion(deviceOrientation))
-        deviceOrientationsElement.textContent = `α: ${alpha.toFixed(2)}, β: ${beta.toFixed(2)}, γ: ${gamma.toFixed(2)}}`
+        camera.quaternion.set(...deviceOrientationToQuaternion(alpha, beta, gamma))
+        deviceOrientationsElement.textContent = `α: ${alpha | 0}, β: ${beta | 0}, γ: ${gamma | 0}}`
         return 1
       }
     }
