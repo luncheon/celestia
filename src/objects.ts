@@ -1,10 +1,12 @@
 import {
+  ArcCurve,
   Color,
-  EllipseCurve,
+  Euler,
   Geometry,
   Line,
   LineBasicMaterial,
   LineSegments,
+  Matrix4,
   Mesh,
   MeshBasicMaterial,
   PlaneGeometry,
@@ -80,14 +82,18 @@ const createConstellationNames = () => {
   })
 }
 
-const createEquinoctial = () =>
+const equinoctialPoints = new ArcCurve(0, 0, 10, 0, 2 * Math.PI, false).getPoints(50)
+
+const createEquinoctial = () => new Line(new Geometry().setFromPoints(equinoctialPoints), new LineBasicMaterial({ color: 0x880000 }))
+
+const createEcliptic = () =>
   new Line(
-    new Geometry().setFromPoints(new EllipseCurve(0, 0, 10, 10, 0, 2 * Math.PI, false, 0).getPoints(50)),
-    new LineBasicMaterial({ color: 0x880000 }),
+    new Geometry().setFromPoints(equinoctialPoints).applyMatrix(new Matrix4().makeRotationFromEuler(new Euler((23.4 / 180) * Math.PI))),
+    new LineBasicMaterial({ color: 0x666600 }),
   )
 
 export const createObjects = () =>
   new FontFace('yomogifont', 'url(yomogifont.ttf)').load().then(font => {
     document.fonts.add(font)
-    return [createStars(), createConstellationLines(), createEquinoctial(), ...createConstellationNames()]
+    return [createEquinoctial(), createEcliptic(), createStars(), createConstellationLines(), ...createConstellationNames()]
   })
