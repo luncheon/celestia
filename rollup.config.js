@@ -17,10 +17,12 @@ const production = process.env.NODE_ENV === 'production'
 const watching = process.env.ROLLUP_WATCH
 const outputDir = production ? 'docs' : '.docs'
 
-const template = () =>
-  fs
-    .readFileSync(path.resolve(__dirname, 'src/index.html'), 'utf-8')
-    .replace(/\$\{__BUILT_AT__\}/, new Date().toISOString().replace(/[-:T]|\..*/g, ''))
+const version = new Date()
+  .toISOString()
+  .replace(/\..*/, '')
+  .replace(/[-:]|\..*/g, '.')
+  .replace(/T/, '-')
+const template = () => fs.readFileSync(path.resolve(__dirname, 'src/index.html'), 'utf-8').replace('${__VERSION__}', version)
 
 export default {
   input: 'src/index.ts',
