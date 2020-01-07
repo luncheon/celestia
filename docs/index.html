@@ -6,38 +6,92 @@
     <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
     <title>Celestia</title>
     <style>
-      body {
+      *,
+      ::before,
+      ::after {
+        box-sizing: border-box;
+        flex: none;
+        font: inherit;
+        color: inherit;
         margin: 0;
+      }
+      body {
         overscroll-behavior: none;
+        color: #ccc;
       }
       canvas {
         display: block;
       }
-      aside {
-        position: fixed;
-        right: .25em;
-        bottom: .125em;
-        text-align: right;
-        color: #aaa;
+      hr {
+        border: none;
+        border-top: 1px solid currentColor;
+        margin: 8px 0;
+      }
+      button {
+        color: inherit;
+        border: none;
+        background: transparent;
+        cursor: pointer;
+        border-radius: 50%;
+        transition: background .2s ease-out;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+      button:hover,
+      button[aria-expanded='true'],
+      nav {
+        background: rgba(255,255,255,.2);
       }
       a {
-        color: #999;
-        text-decoration: none;
         transition: color .2s ease-out;
       }
       a:hover {
         color: #fff;
-        text-decoration: underline;
+      }
+      nav {
+        transition: transform .2s ease-out;
+        transform: translate(-8);
+      }
+      [aria-hidden='true'] {
+        transform: translate(100%);
       }
     </style>
   </head>
   <body>
     <script type="module" src="index.js"></script>
-    <aside>
-      <div id="camera-euler"></div>
-      <div id="device-orientations" style="display: none;"></div>
-      <a target="_blank" rel="noopener" href="https://github.com/luncheon/celestia">https://github.com/luncheon/celestia</a>
-      <div>v20200106091211</div>
-    </aside>
+    <button
+      type="button"
+      aria-haspopup="true"
+      aria-controls="menu"
+      style="position: fixed; top: 8px; right: 8px; padding: 8px"
+      onpointerdown="">
+      <svg viewBox="0 0 16 16" fill="currentColor" width="16" height="16">
+        <circle cx="8" cy="3" r="1.5"></circle>
+        <circle cx="8" cy="8" r="1.5"></circle>
+        <circle cx="8" cy="13" r="1.5"></circle>
+      </svg>
+    </button>
+    <nav id="menu" aria-hidden="true" style="position: fixed; right: 0; top: 48px; padding: 8px 16px">
+      <ul></ul>
+      <aside>
+        <div id="camera-euler"></div>
+        <div id="device-orientations" style="display: none;"></div>
+        <hr>
+        <div>Celestia v2020.01.07-09.15.10</div>
+        <a target="_blank" rel="noopener" href="https://github.com/luncheon/celestia">https://github.com/luncheon/celestia</a>
+      </aside>
+    </nav>
+    <script>
+      document.getElementsByTagName('button')[0].addEventListener('pointerdown', function () {
+        if (this.getAttribute('aria-expanded')) {
+          this.removeAttribute('aria-expanded')
+          this.nextElementSibling.setAttribute('aria-hidden', 'true')
+        } else {
+          this.setAttribute('aria-expanded', 'true')
+          this.nextElementSibling.setAttribute('aria-hidden', 'false')
+        }
+      })
+    </script>
   </body>
 </html>
