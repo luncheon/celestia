@@ -7,8 +7,8 @@ addEventListener('deviceorientationabsolute', event => (deviceOrientation = even
 
 const supportsDeviceOrientationEvent = new Promise(resolve => {
   let deviceOrientationEventCount = 0
-  addEventListener('deviceorientationabsolute', function checkDeviceOrientationSupported() {
-    if (++deviceOrientationEventCount > 1) {
+  addEventListener('deviceorientationabsolute', function checkDeviceOrientationSupported(event) {
+    if (event.alpha !== null && ++deviceOrientationEventCount > 1) {
       this.removeEventListener('deviceorientationabsolute', checkDeviceOrientationSupported)
       resolve()
     }
@@ -37,7 +37,7 @@ export const createControls = async (camera: Camera) => {
         const beta = (deviceOrientation.beta || 0) - latitude
         const gamma = deviceOrientation.gamma || 0
         camera.quaternion.set(...deviceOrientationToQuaternion(alpha, beta, gamma))
-        deviceOrientationsElement.textContent = `α: ${alpha | 0}, β: ${beta | 0}, γ: ${gamma | 0}}`
+        deviceOrientationsElement.textContent = `α: ${alpha | 0}, β: ${beta | 0}, γ: ${gamma | 0}`
         return 1
       }
     }
